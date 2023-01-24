@@ -7,7 +7,7 @@ This project is for users to add work tasks accordingly the day time. The time l
 
 ## Screenshots
  
-![](./images/screenshot.jpg)
+![](./images/jpgscreenshot.jpg)
 
 
 
