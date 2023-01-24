@@ -1,61 +1,56 @@
-setInterval(
- function() {
-  let current = moment()
-  $("#currentDay").text(current.format("dddd, MMMM Do "))
- },1000
-)
-
-/**/
-$('textarea').addClass('time-block')
+// Current date
+let current = moment()
+$("#currentDay").text(current.format("dddd, MMMM Do "))
+ 
+// Current time
 let currentTime = parseInt(moment().format('H'))
 console.log(currentTime);
-//console.log($("#task"));
+
+// For loop to append the rest of the time blocks
 let i
-for( i = 8; i < 18; i++) {
+for( i = 9; i < 18; i++) {
 //console.log($('#text').data("hour"));
- $("#timeBlock").append(
+ $("#container").append(
    `<div style="margin-left:20px;" class="row">
-      <span class="hour">${i}AM</span>
-       <textarea class="text" class="col-8" data-hour=${i}>
+      <span class="col-1 pt-3 pl-1 hour">${i}:00</span>
+       <textarea id="input"  class="col-8 text" data-hour=${i}>
         </textarea>
-        <button style="padding: 20px; margin-left:-2px" class="saveBtn" id="saveBtn" data-hour=${i}><i class="fa fa-floppy-disk"></i>
+        <button  class="col-1 saveBtn" id="saveBtn" data-hour=${i}><i class="fa fa-floppy-disk"></i>
         </button>
     </div>
  `
  ) 
-
-
 }
- $("button").on('click', function(e) {
-  console.log();
 
-  let index = $('.text').data("hour")
-  console.log($('button').data[i]);
- console.log(e.target);
-  if($('.text').data("hour") === $(".saveBtn").data('hour')) {
-   console.log('hello i am' + $('button').data('hour'));
-  }
- //console.log('hello');
- let task = $('.text').val()
- //console.log(typeof(task));
- localStorage.setItem(`at${i}`,task)
+// Adding event listener 
+$("button").on('click',function(e) {
+  e.preventDefault()
+  console.log(e.target);
+  console.log($("#input").val());
+  console.log($("#input").attr('data-hour'),$("#saveBtn").attr('data-hour'));
 
-
-  //$('.text').text(localStorage.getItem(`at${i}`)) 
-
+  if($("#input").attr('data-hour') == $("#saveBtn").attr('data-hour')) {
+   console.log('yes');
+   task = $('#input').val()
+   console.log(task);
+   localStorage.setItem('task', task)
+  }else{
+   console.log('no');
+  } 
 })
+$("#input").text(localStorage.getItem('task'))
 
 
- if($('.text').data("hour") > currentTime) {
-    $(".text").addClass('future')
- }else if($('.text').data("hour") == currentTime) {
-    $(".text").addClass('present')
- }else if($('#text').data("hour") < currentTime) {
-    $(".text").addClass('past')
+// Adding colors according to the current time
+function taskColor() {
+ if($('#input').data("hour") > currentTime) {
+    $("#input").addClass('future')
+ }else if($('#input').data("hour") == currentTime) {
+    $("#input").addClass('present')
+ }else if($('#input').data("hour") < currentTime) {
+    $("#input").addClass('past')
  }
+}
+taskColor()
 
 
- //console.log('there is a task')
- // console.log(localStorage.getItem('at9'));
-
- $(".text").text(localStorage.getItem(`at${i}`))
