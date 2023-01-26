@@ -1,56 +1,67 @@
-// Current date
+// current date
 let current = moment()
 $("#currentDay").text(current.format("dddd, MMMM Do "))
  
-// Current time
-let currentTime = parseInt(moment().format('H'))
+// local current time
+let currentTime = moment().format('H')
 console.log(currentTime);
 
-// For loop to append the rest of the time blocks
-let i
-for( i = 9; i < 18; i++) {
-//console.log($('#text').data("hour"));
- $("#container").append(
-   `<div style="margin-left:20px;" class="row">
-      <span class="col-1 pt-3 pl-1 hour">${i}:00</span>
-       <textarea id="input"  class="col-8 text" data-hour=${i}>
-        </textarea>
-        <button  class="col-1 saveBtn" id="saveBtn" data-hour=${i}><i class="fa fa-floppy-disk"></i>
-        </button>
-    </div>
- `
- ) 
+
+for(let i = 9; i < 18; i++) {
+ // generating and styling elements
+  // create div
+  let lineDiv = $("<div>")
+  lineDiv.attr('class','row')
+  //lineDiv.css({"border-top":"1px dashed #000000"})
+
+  // create span, goes inside the div
+  let hour = $("<span>")
+  hour.text(`${i}:00`)
+  hour.css({'width':'10%','padding-top': '30px','text-align':'center',"border-top":"1px dashed #000000"})
+
+  // create textarea, goes indide the div
+  let textArea = $("<textarea>")
+  textArea.attr('data-hour',`${i}`)
+  textArea.css({'width': '75%',"border-top":"1px dashed #000000"})
+
+  // create button goes inside the div
+  let btn = $("<button>")
+  btn.css({'backgroundColor':'rgb(0,191,255)', 'width': '10%'})
+  btn.addClass('saveBtn')
+  btn.attr('data-hour',`${i}`)
+  btn.text("Save")
+
+  /*
+  let save = $('<i>')
+  save.addClass('fa fa-floppy-disk')
+  save.css({'color':'white'})
+*/
+  // append elements together
+  //btn.append(save)
+  lineDiv.append(hour,textArea,btn)
+  $("#container").append(lineDiv)
+ 
+
+  // add event listener to the button currently clicked
+  btn.on('click',function(e) {
+   e.preventDefault() 
+   let eClick = $(e.target).attr("data-hour"); 
+   let eVal = $(e.target).siblings("textarea").val();
+
+   // add data to localStorage
+   localStorage.setItem(eClick, eVal);
+  })
+
+  // access data from localStorage
+  textArea.text(localStorage.getItem(textArea.attr('data-hour')))
+
+  // adding CSS color classes according to the current time of the day
+  if(textArea.data("hour") > currentTime) {
+     textArea.addClass('future')
+  }else if(textArea.data("hour") == currentTime) {
+    textArea.addClass('present')
+  }else if(textArea.data("hour") < currentTime) {
+    textArea.addClass('past')
+  }
 }
-
-// Adding event listener 
-$("button").on('click',function(e) {
-  e.preventDefault()
-  console.log(e.target);
-  console.log($("#input").val());
-  console.log($("#input").attr('data-hour'),$("#saveBtn").attr('data-hour'));
-
-  if($("#input").attr('data-hour') == $("#saveBtn").attr('data-hour')) {
-   console.log('yes');
-   task = $('#input').val()
-   console.log(task);
-   localStorage.setItem('task', task)
-  }else{
-   console.log('no');
-  } 
-})
-$("#input").text(localStorage.getItem('task'))
-
-
-// Adding colors according to the current time
-function taskColor() {
- if($('#input').data("hour") > currentTime) {
-    $("#input").addClass('future')
- }else if($('#input').data("hour") == currentTime) {
-    $("#input").addClass('present')
- }else if($('#input').data("hour") < currentTime) {
-    $("#input").addClass('past')
- }
-}
-taskColor()
-
 
